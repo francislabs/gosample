@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gosample
+  labels:
+    app: gosample
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gosample
+  template:
+    metadata:
+      labels:
+        app: gosample
+    spec:
+      containers:
+        - name: gosample
+          image: <+artifacts.primary.image>
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gosample
+  labels:
+    app: gosample
+spec:
+  type: LoadBalancer
+  selector:
+    app: gosample
+  ports:
+    - port: 80
+      targetPort: 8080
